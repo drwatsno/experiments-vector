@@ -1,6 +1,6 @@
 // db abstraction layer
 
-var db = require("../components/mdb");
+var db = require("../../components/mdb");
 var crypto = require("crypto");
 
 var userSchema = new db.Schema({

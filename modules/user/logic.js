@@ -1,4 +1,4 @@
-var UserDbAbstraction = require(".abstract");
+var UserDbAbstraction = require(__dirname+'/'+"abstract");
 
 var UserLogic = {};
 
@@ -43,4 +43,22 @@ UserLogic.deleteUser = function( username ) {
     })
 };
 
-module.exports = UserExport;
+UserLogic.getUsers = function () {
+    return new Promise(function (resolve, reject) {
+        UserDbAbstraction.find({}, function (error, docs) {
+            if (error) {reject(error);} else
+                resolve(docs);
+        });
+    });
+};
+
+UserLogic.getUserById = function (id) {
+  return new Promise(function (resolve, reject) {
+      UserDbAbstraction.find({_id:id}, function (error, doc) {
+          if (error) {reject(error);} else 
+              resolve(doc);
+      })
+  })
+};
+
+module.exports = UserLogic;

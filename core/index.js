@@ -19,17 +19,17 @@ class Application {
     }
     addResourcePaths ( paths ) {
         for (let sPath of paths) {
-            app.use(express.static(path.join(__dirname, sPath)));
+            app.use(express.static(path.join("./", sPath)));
         }
     }
     enableModules ( modules ) {
         for (let sModule of modules) {
             let requireModule = require('../modules/'+sModule+'/controller');
-            app.use('/'+sModule, requireModule);
+            app.use(requireModule.controllerAlias?requireModule.controllerAlias:('/'+sModule), requireModule);
         }
     }
     init () {
-        app.set('views', path.join(__dirname, 'views'));
+        app.set('views', path.join("./", 'views'));
         app.set('view engine', this.viewEngine);
 
         
@@ -37,7 +37,7 @@ class Application {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
-        app.use(require('less-middleware')(path.join(__dirname, 'public')));
+        app.use(require('less-middleware')(path.join("./", 'public')));
 
         this.addResourcePaths(this.resourcePaths);
         this.enableModules(this.enabledModules);
