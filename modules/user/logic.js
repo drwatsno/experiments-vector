@@ -2,21 +2,35 @@ var UserDbAbstraction = require(__dirname+'/'+"abstract");
 
 var UserLogic = {};
 
+/**
+ * Creates user with username and secret
+ * @param username
+ * @param secret
+ */
 UserLogic.createUser = function ( username,secret ) {
-    var user = new UserDbAbstraction({
-        username : username,
-        password   : secret
-    });
+    return new Promise(function (resolve, reject) {
+        var user = new UserDbAbstraction({
+            username : username,
+            password   : secret
+        });
 
-    user.save(function (error, user, affected) {
-        if (!error) {
-            if (process.env.NODE_ENV == 'development') {
-                console.log('UserController: successfully added user "'+user.username+'"\n hash:'+user.secret+'\naffected: '+affected);
-            }
-        } else throw error;
-    })
+        user.save(function (error, user, affected) {
+            if (!error) {
+                if (process.env.NODE_ENV == 'development') {
+                    console.log('UserController: successfully added user "'+user.username+'"\n hash:'+user.secret+'\naffected: '+affected);
+                }
+                resolve(user);
+            } else reject(error);
+        })
+    });
+   
 };
 
+/**
+ * Updates user with new fields
+ * @param user
+ * @param updatedFields
+ */
 UserLogic.updateUser = function (user, updatedFields) {
     UserDbAbstraction.findOne({ username: username }, function (error, doc){
         if (!error) {
@@ -33,15 +47,28 @@ UserLogic.updateUser = function (user, updatedFields) {
     });
 };
 
+/**
+ * Deletes user by username
+ * @param username
+ */
 UserLogic.deleteUser = function( username ) {
-    UserDbAbstraction.find({username:username}).remove (function (error) {
-        if (!error) {
-            if (process.env.NODE_ENV == 'development') {
-                console.log('UserController: successfully updated user');
-            }
-        }
-    })
+    return new Promise(function (resolve, reject) {
+        UserDbAbstraction.find({username:username}).remove (function (error,docs) {
+            if (!error) {
+                if (process.env.NODE_ENV == 'development') {
+                    console.log('UserController: successfully updated user');
+                }
+                resolve(docs);
+            } else reject(error);
+        })
+    });
+   
 };
+
+/**
+ * Get all users
+ * @returns {Promise}
+ */
 
 UserLogic.getUsers = function () {
     return new Promise(function (resolve, reject) {
@@ -51,6 +78,12 @@ UserLogic.getUsers = function () {
         });
     });
 };
+
+/**
+ * Returns user by id
+ * @param id
+ * @returns {Promise}
+ */
 
 UserLogic.getUserById = function (id) {
   return new Promise(function (resolve, reject) {

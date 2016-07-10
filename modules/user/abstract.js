@@ -25,7 +25,7 @@ var userSchema = new db.Schema({
 });
 
 userSchema.methods.encryptSecret = function (secret) {
-    return crypto.createHmac('sha512',secret);
+    return crypto.createHmac('sha512',secret).digest('hex');
 };
 
 userSchema.methods.checkSecret = function (secret) {
