@@ -14,11 +14,17 @@ var userSchema = new db.Schema({
         unique: false,
         required: false
     },
+    role: {
+        type: Number,
+        unique: false,
+        required: true,
+        default: 10
+    },
     created: {
         type: Date,
         default: Date.now
     },
-    update: {
+    updated: {
         type: Date,
         default: Date.now
     }
