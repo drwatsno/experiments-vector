@@ -5,7 +5,9 @@ var express = require('express'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-
+    session = require('express-session'),
+    mongoose = require('mongoose'),
+    MongoStore = require('connect-mongo')(session),
     app = express();
 
 
@@ -38,7 +40,10 @@ class Application {
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
         app.use(require('less-middleware')(path.join("./", 'public')));
-
+        app.use(session({
+            secret: 'vectorize',
+            store: new MongoStore({ mongooseConnection: mongoose.connection })
+        }));
         this.addResourcePaths(this.resourcePaths);
         this.enableModules(this.enabledModules);
 
